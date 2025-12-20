@@ -1,13 +1,34 @@
-// Update this page (the content is just a fallback if you fail to update the page)
+import HeroSection from "@/components/HeroSection";
+import BookingForm from "@/components/BookingForm";
+import Footer from "@/components/Footer";
 
 const Index = () => {
   return (
-    <div className="flex min-h-screen items-center justify-center bg-background">
-      <div className="text-center">
-        <h1 className="mb-4 text-4xl font-bold">Welcome to Your Blank App</h1>
-        <p className="text-xl text-muted-foreground">Start building your amazing project here!</p>
-      </div>
-    </div>
+    <main className="min-h-screen flex flex-col">
+      <HeroSection />
+
+      {/* Booking Section */}
+      <section className="flex-1 py-12 md:py-20">
+        <div className="container mx-auto px-4">
+          <div className="max-w-xl mx-auto">
+            <div className="text-center mb-10">
+              <h2 className="text-3xl md:text-4xl font-serif font-semibold text-foreground mb-3">
+                Boka via formuläret
+              </h2>
+              <p className="text-muted-foreground">
+                Fyll i dina uppgifter nedan så kontaktar vi dig för att bekräfta bokningen.
+              </p>
+            </div>
+
+            <div className="bg-card rounded-2xl shadow-card p-6 md:p-8 border border-border/50">
+              <BookingForm />
+            </div>
+          </div>
+        </div>
+      </section>
+
+      <Footer />
+    </main>
   );
 };
 
