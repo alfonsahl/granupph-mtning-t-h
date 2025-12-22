@@ -1,12 +1,23 @@
--- Drop existing policies
+-- Drop all existing policies first
 DROP POLICY IF EXISTS "Allow public insert on bookings" ON public.bookings;
+DROP POLICY IF EXISTS "Allow anon insert on bookings" ON public.bookings;
+DROP POLICY IF EXISTS "Allow authenticated insert on bookings" ON public.bookings;
 DROP POLICY IF EXISTS "Allow authenticated read on bookings" ON public.bookings;
+DROP POLICY IF EXISTS "Allow service_role full access" ON public.bookings;
 
--- Create policy to allow anyone (including anonymous users) to insert bookings
-CREATE POLICY "Allow public insert on bookings"
+-- Create policy to allow anonymous users (anon) to insert bookings
+-- This is the role used by Supabase client when not authenticated
+CREATE POLICY "Allow anon insert on bookings"
   ON public.bookings
   FOR INSERT
-  TO public
+  TO anon
+  WITH CHECK (true);
+
+-- Also allow authenticated users to insert (in case someone is logged in)
+CREATE POLICY "Allow authenticated insert on bookings"
+  ON public.bookings
+  FOR INSERT
+  TO authenticated
   WITH CHECK (true);
 
 -- Create policy to allow authenticated users to read all bookings (for admin)
@@ -15,12 +26,3 @@ CREATE POLICY "Allow authenticated read on bookings"
   FOR SELECT
   TO authenticated
   USING (true);
-
--- Also allow service_role to do everything (for admin operations)
-CREATE POLICY "Allow service_role full access"
-  ON public.bookings
-  FOR ALL
-  TO service_role
-  USING (true)
-  WITH CHECK (true);
-
