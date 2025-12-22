@@ -9,7 +9,6 @@ import { RadioGroup, RadioGroupItem } from "@/components/ui/radio-group";
 import { Label } from "@/components/ui/label";
 import { Checkbox } from "@/components/ui/checkbox";
 import { Form, FormControl, FormField, FormItem, FormLabel, FormMessage } from "@/components/ui/form";
-import { useToast } from "@/hooks/use-toast";
 import { TreePine, CheckCircle2, Smartphone, X, Loader2 } from "lucide-react";
 import { supabase } from "@/lib/supabase";
 
@@ -37,7 +36,6 @@ const pickupDates = [
 const BookingForm = () => {
   const [isSubmitted, setIsSubmitted] = useState(false);
   const [isLoading, setIsLoading] = useState(false);
-  const { toast } = useToast();
 
   const form = useForm<BookingFormData>({
     resolver: zodResolver(bookingSchema),
@@ -99,17 +97,8 @@ const BookingForm = () => {
       }
 
       setIsSubmitted(true);
-      toast({
-        title: "Bokning mottagen!",
-        description: "Vi har skickat en bekräftelse till din e-postadress.",
-      });
     } catch (error) {
       console.error('Error submitting booking:', error);
-      toast({
-        title: "Något gick fel",
-        description: "Kunde inte skicka bokningen. Vänligen försök igen senare.",
-        variant: "destructive",
-      });
     } finally {
       setIsLoading(false);
     }
@@ -136,7 +125,7 @@ const BookingForm = () => {
             Tack för din bokning!
           </h3>
           <p className="text-lg md:text-xl text-foreground mb-4 max-w-md mx-auto">
-            Vi ser framemot att hämta din!
+            Vi ser framemot att hämta din gran!
           </p>
           <p className="text-lg md:text-xl text-foreground mb-8 max-w-md mx-auto">
             För att underlätta vid upphämtningen går det bra att betala nu till Alexander Foxér Eriksson
