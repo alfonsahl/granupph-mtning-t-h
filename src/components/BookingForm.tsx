@@ -203,7 +203,7 @@ const BookingForm = () => {
               </FormControl>
               <div className="space-y-1 leading-none">
                 <FormLabel className="cursor-pointer">
-                  Jag bekräftar att betalning sker senast vid upphämtning *
+                  Jag intygar att betalning sker senast vid upphämtning *
                 </FormLabel>
                 <FormMessage />
               </div>
