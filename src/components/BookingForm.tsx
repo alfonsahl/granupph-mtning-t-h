@@ -10,7 +10,7 @@ import { Label } from "@/components/ui/label";
 import { Checkbox } from "@/components/ui/checkbox";
 import { Form, FormControl, FormField, FormItem, FormLabel, FormMessage } from "@/components/ui/form";
 import { useToast } from "@/hooks/use-toast";
-import { TreePine, CheckCircle2 } from "lucide-react";
+import { TreePine, CheckCircle2, Smartphone, X } from "lucide-react";
 
 const bookingSchema = z.object({
   name: z.string().trim().min(2, { message: "Vänligen ange ditt namn" }).max(100),
@@ -60,20 +60,46 @@ const BookingForm = () => {
 
   if (isSubmitted) {
     return (
-      <div className="text-center py-12 animate-fade-in-up">
-        <div className="inline-flex items-center justify-center w-20 h-20 rounded-full bg-primary/10 mb-6">
-          <CheckCircle2 className="w-10 h-10 text-primary" />
+      <div className="fixed inset-0 z-50 flex items-center justify-center bg-background/95 backdrop-blur-sm animate-fade-in-up">
+        <div className="text-center py-12 px-4 max-w-2xl mx-auto relative">
+          <button
+            onClick={() => {
+              setIsSubmitted(false);
+              form.reset();
+            }}
+            className="absolute top-4 right-4 text-muted-foreground hover:text-foreground transition-colors p-2"
+            aria-label="Stäng bekräftelse"
+          >
+            <X className="w-6 h-6" />
+          </button>
+          <div className="inline-flex items-center justify-center w-20 h-20 rounded-full bg-primary/10 mb-6">
+            <CheckCircle2 className="w-10 h-10 text-primary" />
+          </div>
+          <h3 className="text-3xl md:text-4xl font-serif font-semibold text-foreground mb-6">
+            Tack för din bokning!
+          </h3>
+          <p className="text-lg md:text-xl text-foreground mb-4 max-w-md mx-auto">
+            Vi ser framemot att hämta din!
+          </p>
+          <p className="text-lg md:text-xl text-foreground mb-8 max-w-md mx-auto">
+            För att underlätta vid upphämtningen går det bra att betala nu till Alexander Foxér Eriksson
+          </p>
+        <div className="flex items-center justify-center gap-3 mb-3">
+          <Smartphone className="w-6 h-6 text-primary" />
+          <p className="text-base md:text-lg text-foreground">
+            Betala med Swish till <span className="font-semibold">073-852 30 62</span>
+          </p>
         </div>
-        <h3 className="text-2xl md:text-3xl font-serif font-semibold text-foreground mb-4">
-          Tack för din bokning!
-        </h3>
-        <p className="text-muted-foreground max-w-md mx-auto">
-          Vi har mottagit din bokning och skickar en bekräftelse via SMS inom kort. 
-          Betalning sker i samband med upphämtningen.
-        </p>
+        <div className="mb-8 flex justify-center">
+          <img 
+            src="/swish-alex.png" 
+            alt="Swish QR-kod" 
+            className="max-w-[200px] h-auto"
+          />
+        </div>
         <Button
           variant="outline"
-          className="mt-8"
+          className="mt-4"
           onClick={() => {
             setIsSubmitted(false);
             form.reset();
@@ -81,6 +107,7 @@ const BookingForm = () => {
         >
           Gör en ny bokning
         </Button>
+        </div>
       </div>
     );
   }
