@@ -10,10 +10,12 @@ import { Label } from "@/components/ui/label";
 import { Checkbox } from "@/components/ui/checkbox";
 import { Form, FormControl, FormField, FormItem, FormLabel, FormMessage } from "@/components/ui/form";
 import { useToast } from "@/hooks/use-toast";
-import { TreePine, CheckCircle2, Smartphone, X } from "lucide-react";
+import { TreePine, CheckCircle2, Smartphone, X, Loader2 } from "lucide-react";
+import { supabase } from "@/lib/supabase";
 
 const bookingSchema = z.object({
   name: z.string().trim().min(2, { message: "Vänligen ange ditt namn" }).max(100),
+  email: z.string().trim().email({ message: "Vänligen ange en giltig e-postadress" }),
   phone: z.string().trim().min(8, { message: "Vänligen ange ett giltigt telefonnummer" }).max(20),
   address: z.string().trim().min(5, { message: "Vänligen ange din adress i Trollhättans kommun" }).max(200),
   pickupDate: z.string({ required_error: "Vänligen välj ett datum" }),
@@ -34,12 +36,14 @@ const pickupDates = [
 
 const BookingForm = () => {
   const [isSubmitted, setIsSubmitted] = useState(false);
+  const [isLoading, setIsLoading] = useState(false);
   const { toast } = useToast();
 
   const form = useForm<BookingFormData>({
     resolver: zodResolver(bookingSchema),
     defaultValues: {
       name: "",
+      email: "",
       phone: "",
       address: "",
       pickupDate: "",
@@ -49,13 +53,66 @@ const BookingForm = () => {
     },
   });
 
-  const onSubmit = (data: BookingFormData) => {
-    console.log("Booking submitted:", data);
-    setIsSubmitted(true);
-    toast({
-      title: "Bokning mottagen!",
-      description: "Vi bekräftar din bokning via SMS inom kort.",
-    });
+  const onSubmit = async (data: BookingFormData) => {
+    setIsLoading(true);
+    
+    try {
+      // Save booking to database
+      const { data: bookingData, error } = await supabase
+        .from('bookings')
+        .insert([
+          {
+            name: data.name,
+            email: data.email,
+            phone: data.phone,
+            address: data.address,
+            pickup_date: data.pickupDate,
+            time_preference: data.timePreference,
+            additional_info: data.additionalInfo || null,
+            confirm_payment: data.confirmPayment,
+          },
+        ])
+        .select()
+        .single();
+
+      if (error) {
+        throw error;
+      }
+
+      // Send confirmation email via Edge Function
+      try {
+        await supabase.functions.invoke('send-booking-confirmation', {
+          body: {
+            id: bookingData.id,
+            name: data.name,
+            email: data.email,
+            phone: data.phone,
+            address: data.address,
+            pickup_date: data.pickupDate,
+            time_preference: data.timePreference,
+            additional_info: data.additionalInfo || null,
+          },
+        });
+      } catch (emailError) {
+        // Log email error but don't fail the booking
+        console.error('Error sending confirmation email:', emailError);
+      }
+
+      setIsSubmitted(true);
+      toast({
+        title: "Bokning mottagen!",
+        description: "Vi har skickat en bekräftelse till din e-postadress.",
+      });
+    } catch (error) {
+      console.error('Error submitting booking:', error);
+      toast({
+        title: "Något gick fel",
+        description: "Kunde inte skicka bokningen. Vänligen försök igen senare.",
+        variant: "destructive",
+      });
+    } finally {
+      setIsLoading(false);
+    }
   };
 
   if (isSubmitted) {
@@ -123,6 +180,20 @@ const BookingForm = () => {
               <FormLabel>För- och efternamn *</FormLabel>
               <FormControl>
                 <Input placeholder="Ditt namn" {...field} />
+              </FormControl>
+              <FormMessage />
+            </FormItem>
+          )}
+        />
+
+        <FormField
+          control={form.control}
+          name="email"
+          render={({ field }) => (
+            <FormItem>
+              <FormLabel>E-postadress *</FormLabel>
+              <FormControl>
+                <Input type="email" placeholder="din.epost@example.com" {...field} />
               </FormControl>
               <FormMessage />
             </FormItem>
@@ -247,9 +318,18 @@ const BookingForm = () => {
           </p>
         </div>
 
-        <Button type="submit" size="lg" className="w-full">
-          <TreePine className="w-5 h-5 mr-2" />
-          Boka upphämtning
+        <Button type="submit" size="lg" className="w-full" disabled={isLoading}>
+          {isLoading ? (
+            <>
+              <Loader2 className="w-5 h-5 mr-2 animate-spin" />
+              Skickar...
+            </>
+          ) : (
+            <>
+              <TreePine className="w-5 h-5 mr-2" />
+              Boka upphämtning
+            </>
+          )}
         </Button>
       </form>
     </Form>
