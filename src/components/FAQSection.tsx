@@ -47,7 +47,7 @@ const FAQSection = () => {
                 <AccordionTrigger className="text-left font-medium hover:no-underline">
                   {item.question}
                 </AccordionTrigger>
-                <AccordionContent className="text-muted-foreground">
+                <AccordionContent className="text-foreground">
                   {item.answer}
                 </AccordionContent>
               </AccordionItem>
