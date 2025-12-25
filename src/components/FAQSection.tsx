@@ -7,7 +7,7 @@ import {
 
 const faqItems = [
   {
-    question: "Är ni företag?",
+    question: "Är ni ett företag?",
     answer: "Nej, vi är inte ett registrerat företag utan två privatpersoner som gör detta på vår fritid eftersom vi själva saknade en motsvarande tjänst. Alla intäkter tas därför upp i våra egna deklarationer.",
   },
   {
