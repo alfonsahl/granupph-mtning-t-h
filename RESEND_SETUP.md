@@ -33,9 +33,14 @@ Denna guide visar hur du sätter upp Resend för att skicka bekräftelsemail til
 
 ### Installera Supabase CLI (om du inte redan har det)
 
+**På macOS (rekommenderat):**
 ```bash
-npm install -g supabase
+brew install supabase/tap/supabase
 ```
+
+**Alternativ för andra plattformar:**
+- Se [Supabase CLI installation guide](https://github.com/supabase/cli#install-the-cli)
+- Supabase CLI kan INTE installeras via `npm install -g` - använd Homebrew, Scoop, eller ladda ner binären direkt
 
 ### Logga in på Supabase
 
@@ -57,7 +62,7 @@ Sätt Resend API-nyckeln och avsändaradressen:
 
 ```bash
 supabase secrets set RESEND_API_KEY=re_xxxxxxxxxxxxx
-supabase secrets set FROM_EMAIL=noreply@din-domän.com
+supabase secrets set FROM_EMAIL=noreply@granupphamtning.se
 ```
 
 **För testdomän:**

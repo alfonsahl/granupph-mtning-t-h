@@ -17,8 +17,46 @@ interface BookingData {
 
 serve(async (req) => {
   try {
+    // Log request method and headers for debugging
+    console.log("Request method:", req.method);
+    console.log("Content-Type:", req.headers.get("content-type"));
+    
+    // Handle different HTTP methods
+    if (req.method === "OPTIONS") {
+      return new Response(null, {
+        status: 200,
+        headers: {
+          "Access-Control-Allow-Origin": "*",
+          "Access-Control-Allow-Methods": "POST, OPTIONS",
+          "Access-Control-Allow-Headers": "Content-Type, Authorization",
+        },
+      });
+    }
+
     // Get the booking data from the request
-    const booking: BookingData = await req.json();
+    let booking: BookingData;
+    try {
+      // Try to get body as text first
+      const bodyText = await req.text();
+      console.log("Body text length:", bodyText?.length || 0);
+      
+      if (!bodyText || bodyText.trim() === "") {
+        console.error("Empty request body");
+        return new Response(
+          JSON.stringify({ error: "Request body is empty" }),
+          { status: 400, headers: { "Content-Type": "application/json" } }
+        );
+      }
+      
+      booking = JSON.parse(bodyText);
+      console.log("Parsed booking data:", { email: booking.email, name: booking.name });
+    } catch (parseError) {
+      console.error("JSON parse error:", parseError);
+      return new Response(
+        JSON.stringify({ error: "Invalid JSON in request body", details: parseError.message }),
+        { status: 400, headers: { "Content-Type": "application/json" } }
+      );
+    }
 
     if (!booking.email || !RESEND_API_KEY) {
       return new Response(

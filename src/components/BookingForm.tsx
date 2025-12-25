@@ -79,18 +79,26 @@ const BookingForm = () => {
 
       // Send confirmation email via Edge Function
       try {
-        await supabase.functions.invoke('send-booking-confirmation', {
-          body: {
-            id: bookingData.id,
-            name: data.name,
-            email: data.email,
-            phone: data.phone,
-            address: data.address,
-            pickup_date: data.pickupDate,
-            time_preference: data.timePreference,
-            additional_info: data.additionalInfo || null,
-          },
+        const emailPayload = {
+          id: bookingData.id,
+          name: data.name,
+          email: data.email,
+          phone: data.phone,
+          address: data.address,
+          pickup_date: data.pickupDate,
+          time_preference: data.timePreference,
+          additional_info: data.additionalInfo || null,
+        };
+        
+        const { data: emailData, error: emailError } = await supabase.functions.invoke('send-booking-confirmation', {
+          body: emailPayload,
         });
+        
+        if (emailError) {
+          console.error('Error sending confirmation email:', emailError);
+        } else {
+          console.log('Confirmation email sent successfully:', emailData);
+        }
       } catch (emailError) {
         // Log email error but don't fail the booking
         console.error('Error sending confirmation email:', emailError);
