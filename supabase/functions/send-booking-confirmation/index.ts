@@ -136,27 +136,38 @@ serve(async (req) => {
     `;
 
     // Send email via Resend API
+    const emailPayload = {
+      from: FROM_EMAIL,
+      to: [booking.email], // Resend API requires 'to' to be an array
+      subject: "Bekräftelse på din bokning - Granupphämtning i Trollhättan",
+      html: emailHtml,
+    };
+
+    console.log("Sending email to:", booking.email);
+    console.log("From email:", FROM_EMAIL);
+    console.log("Resend API key present:", !!RESEND_API_KEY);
+
     const resendResponse = await fetch("https://api.resend.com/emails", {
       method: "POST",
       headers: {
         "Content-Type": "application/json",
         "Authorization": `Bearer ${RESEND_API_KEY}`,
       },
-      body: JSON.stringify({
-        from: FROM_EMAIL,
-        to: booking.email,
-        subject: "Bekräftelse på din bokning - Granupphämtning i Trollhättan",
-        html: emailHtml,
-      }),
+      body: JSON.stringify(emailPayload),
     });
+
+    console.log("Resend response status:", resendResponse.status);
+    console.log("Resend response ok:", resendResponse.ok);
 
     if (!resendResponse.ok) {
       const errorData = await resendResponse.text();
       console.error("Resend API error:", errorData);
+      console.error("Response status:", resendResponse.status);
       throw new Error(`Failed to send email: ${errorData}`);
     }
 
     const result = await resendResponse.json();
+    console.log("Email sent successfully:", result);
 
     return new Response(
       JSON.stringify({ success: true, messageId: result.id }),
