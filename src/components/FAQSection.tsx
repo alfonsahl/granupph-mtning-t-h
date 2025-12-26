@@ -11,7 +11,7 @@ const faqItems = [
     answer: "Nej, vi är inte ett registrerat företag utan två privatpersoner som gör detta på vår fritid eftersom vi själva saknade en motsvarande tjänst. Alla intäkter tas därför upp i våra egna deklarationer.",
   },
   {
-    question: "Hur mycket kostar en upphämtningen?",
+    question: "Hur mycket kostar en upphämtning?",
     answer: "En granupphämtning kostar 99 kr per gran.",
   },
   {
