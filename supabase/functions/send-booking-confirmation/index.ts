@@ -130,8 +130,6 @@ serve(async (req) => {
 
     // Format the pickup date
     const pickupDate = new Date(booking.pickup_date).toLocaleDateString("sv-SE", {
-      weekday: "long",
-      year: "numeric",
       month: "long",
       day: "numeric",
     });
