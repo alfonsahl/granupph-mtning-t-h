@@ -217,6 +217,7 @@ const Admin = () => {
   // Get bookings for specific dates
   const date2025_01_02 = bookingsByDate["2025-01-02"] || [];
   const date2025_01_10 = bookingsByDate["2025-01-10"] || [];
+  const date2025_01_11 = bookingsByDate["2025-01-11"] || [];
   const date2025_01_17 = bookingsByDate["2025-01-17"] || [];
 
   // Helper function to get bookings for a date with picked up at bottom
@@ -563,7 +564,7 @@ const Admin = () => {
           <Tabs value={activeTab} onValueChange={handleTabChange} className="w-full">
             <Card className="mb-4 sm:mb-6 shadow-md">
               <CardContent className="p-2 sm:p-3">
-                <TabsList className="grid w-full grid-cols-2 sm:grid-cols-3 lg:grid-cols-5 h-auto bg-transparent gap-2">
+                <TabsList className="grid w-full grid-cols-2 sm:grid-cols-3 lg:grid-cols-6 h-auto bg-transparent gap-2">
                   <TabsTrigger 
                     value="all" 
                     className="text-xs sm:text-sm py-2.5 sm:py-3 px-3 sm:px-4 font-medium rounded-lg border-2 data-[state=active]:bg-primary data-[state=active]:text-primary-foreground data-[state=active]:border-primary data-[state=active]:shadow-md transition-all hover:bg-muted"
@@ -596,6 +597,18 @@ const Admin = () => {
                       <span>10 jan</span>
                       <span className="bg-muted text-foreground data-[state=active]:bg-background data-[state=active]:text-primary px-1.5 sm:px-2 py-0.5 rounded-full text-xs font-semibold">
                         {date2025_01_10.length}
+                      </span>
+                    </span>
+                  </TabsTrigger>
+                  <TabsTrigger 
+                    value="2025-01-11" 
+                    className="text-xs sm:text-sm py-2.5 sm:py-3 px-3 sm:px-4 font-medium rounded-lg border-2 data-[state=active]:bg-primary data-[state=active]:text-primary-foreground data-[state=active]:border-primary data-[state=active]:shadow-md transition-all hover:bg-muted"
+                  >
+                    <span className="flex items-center gap-1.5 sm:gap-2">
+                      <Calendar className="h-3 w-3 sm:h-4 sm:w-4" />
+                      <span>11 jan</span>
+                      <span className="bg-muted text-foreground data-[state=active]:bg-background data-[state=active]:text-primary px-1.5 sm:px-2 py-0.5 rounded-full text-xs font-semibold">
+                        {date2025_01_11.length}
                       </span>
                     </span>
                   </TabsTrigger>
@@ -751,6 +764,49 @@ const Admin = () => {
                 <Card>
                   <CardContent className="py-12 sm:py-16 text-center text-muted-foreground text-sm sm:text-base">
                     Inga bokningar för 10 januari.
+                  </CardContent>
+                </Card>
+              )}
+            </TabsContent>
+
+            {/* 11 januari */}
+            <TabsContent value="2025-01-11" className="mt-0">
+              {date2025_01_11.length > 0 ? (
+                <>
+                  {/* Desktop Table View */}
+                  <Card className="hidden md:block">
+                    <CardContent className="p-0">
+                      <div className="overflow-x-auto">
+                        <Table>
+                          <TableHeader>
+                            <TableRow>
+                              <TableHead>Hämtad</TableHead>
+                              <TableHead>Namn</TableHead>
+                              <TableHead>Kontakt</TableHead>
+                              <TableHead>Adress</TableHead>
+                              <TableHead>Datum</TableHead>
+                              <TableHead>Tid</TableHead>
+                              <TableHead>Önskemål</TableHead>
+                              <TableHead>Betalning</TableHead>
+                              <TableHead>Bokad</TableHead>
+                            </TableRow>
+                          </TableHeader>
+                          <TableBody>
+                            {getBookingsForDate(date2025_01_11).map((booking) => renderBookingCard(booking, false))}
+                          </TableBody>
+                        </Table>
+                      </div>
+                    </CardContent>
+                  </Card>
+                  {/* Mobile Card View */}
+                  <div className="md:hidden space-y-3 sm:space-y-4">
+                    {getBookingsForDate(date2025_01_11).map((booking) => renderBookingCard(booking, true))}
+                  </div>
+                </>
+              ) : (
+                <Card>
+                  <CardContent className="py-12 sm:py-16 text-center text-muted-foreground text-sm sm:text-base">
+                    Inga bokningar för 11 januari.
                   </CardContent>
                 </Card>
               )}
