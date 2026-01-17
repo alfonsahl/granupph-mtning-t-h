@@ -31,7 +31,7 @@ const pickupDates = [
   { value: "2025-01-02", label: "Fredag 2 januari", disabled: true },
   { value: "2025-01-10", label: "Lördag 10 januari (FULLBOKAT)", disabled: true },
   { value: "2025-01-11", label: "Söndag 11 januari (FULLBOKAT)", disabled: true },
-  { value: "2025-01-17", label: "Lördag 17 januari", disabled: false },
+  { value: "2025-01-17", label: "Lördag 17 januari (FULLBOKAT)", disabled: true },
 ];
 
 const BookingForm = () => {
